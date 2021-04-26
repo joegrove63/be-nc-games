@@ -1,5 +1,6 @@
 const seed = require('./seed');
 const db = require('../connection');
+const data = require('../data/development-data/index');
 /*
 Here you will need to require in:
 
@@ -7,7 +8,7 @@ Here you will need to require in:
 - the dev data,
 */
 const runSeed = () => {
-  return seed().then(() => db.end());
+  return seed(data).then(() => db.end());
   // run the seed with the data
 };
 
