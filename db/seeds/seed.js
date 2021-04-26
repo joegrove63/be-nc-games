@@ -16,6 +16,19 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
         categoryData.map(({ slug, description }) => [slug, description])
       );
       return db.query(insertCategoryQueryString);
+    })
+    .then(() => {
+      const insertUsersQueryString = format(
+        `INSERT INTO users
+        (username, avatar_url, name)
+        VALUES %L;`,
+        userData.map(({ username, name, avatar_url }) => [
+          username,
+          avatar_url,
+          name
+        ])
+      );
+      return db.query(insertUsersQueryString);
     });
 };
 
