@@ -1,6 +1,7 @@
 const db = require('../connection');
 const { createTables, dropTables } = require('../manageTables');
 const format = require('pg-format');
+const { amendDate } = require('../utils/data-manipulation');
 
 const seed = ({ categoryData, commentData, reviewData, userData }) => {
   return dropTables()
@@ -29,6 +30,53 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
         ])
       );
       return db.query(insertUsersQueryString);
+    })
+    .then(() => {
+      amendDate(reviewData);
+      const insertReviewsQueryString = format(
+        `INSERT INTO reviews
+        (title, review_body, designer, review_img_url, votes, category, owner, created_at)
+        VALUES %L`,
+        reviewData.map(
+          ({
+            title,
+            review_body,
+            designer,
+            review_img_url,
+            votes,
+            category,
+            owner,
+            created_at
+          }) => [
+            title,
+            review_body,
+            designer,
+            review_img_url,
+            votes,
+            category,
+            owner,
+            created_at
+          ]
+        )
+      );
+      return db.query(insertReviewsQueryString);
+    })
+    .then(() => {
+      amendDate(commentData);
+      const insertCommentsQueryString = format(
+        `INSERT INTO comments
+        (author, review_id, votes, created_at, body)
+        VALUES %L
+        `,
+        commentData.map(({ author, review_id, votes, created_at, body }) => [
+          author,
+          review_id,
+          votes,
+          created_at,
+          body
+        ])
+      );
+      return db.query(insertCommentsQueryString);
     });
 };
 
