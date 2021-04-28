@@ -36,7 +36,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
       const insertReviewsQueryString = format(
         `INSERT INTO reviews
         (title, review_body, designer, review_img_url, votes, category, owner, created_at)
-        VALUES %L`,
+        VALUES %L RETURNING *`,
         reviewData.map(
           ({
             title,
@@ -61,7 +61,8 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
       );
       return db.query(insertReviewsQueryString);
     })
-    .then(() => {
+    .then((returnedReviewData) => {
+      console.log(returnedReviewData.rows);
       amendDate(commentData);
       const insertCommentsQueryString = format(
         `INSERT INTO comments

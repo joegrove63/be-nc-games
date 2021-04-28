@@ -16,8 +16,8 @@ const amendDate = (data) => {
   data.forEach((object) => (object.created_at = new Date(object.created_at)));
 };
 
-const authorLookup = (comments) => {
+const createReviewLookupObj = () => {
   return {};
 };
 
-module.exports = { amendDate, authorLookup };
+module.exports = { amendDate, createReviewLookupObj };
