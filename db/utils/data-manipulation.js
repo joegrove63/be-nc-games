@@ -13,7 +13,11 @@
 // //value slug
 
 const amendDate = (data) => {
-  data.forEach((object) => (object.created_at = new Date(object.created_at)));
+  return data.map((object) => {
+    const copyOfObject = { ...object };
+    copyOfObject.created_at = new Date(object.created_at);
+    return copyOfObject;
+  });
 };
 
 const createReviewLookupObj = (reviews) => {
@@ -24,10 +28,19 @@ const createReviewLookupObj = (reviews) => {
 };
 
 const formatComments = (commentData, lookupObj) => {
-  const formattedComment = {};
   if (commentData.length === 0) return [];
-  formattedComment.review_id = lookupObj['JengARRGGGH!'];
-  console.log(formattedComment);
+  const formattedComments = commentData.map((comment) => {
+    const formattedComment = {};
+    formattedComment.review_id = lookupObj[comment.belongs_to];
+    const { body, created_by, votes, created_at } = comment;
+    formattedComment.body = body;
+    formattedComment.created_by = created_by;
+    formattedComment.votes = votes;
+    formattedComment.created_at = created_at;
+    return formattedComment;
+  });
+  return formattedComments;
+
   //spread rest of comment key value pairs into formattedComment (not belongs_to)
 };
 

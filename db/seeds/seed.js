@@ -1,7 +1,11 @@
 const db = require('../connection');
 const { createTables, dropTables } = require('../manageTables');
 const format = require('pg-format');
-const { amendDate } = require('../utils/data-manipulation');
+const {
+  amendDate,
+  createReviewLookupObj,
+  formatComments
+} = require('../utils/data-manipulation');
 
 const seed = ({ categoryData, commentData, reviewData, userData }) => {
   return dropTables()
@@ -32,12 +36,12 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
       return db.query(insertUsersQueryString);
     })
     .then(() => {
-      amendDate(reviewData);
+      const amendedReviewData = amendDate(reviewData);
       const insertReviewsQueryString = format(
         `INSERT INTO reviews
         (title, review_body, designer, review_img_url, votes, category, owner, created_at)
         VALUES %L RETURNING *`,
-        reviewData.map(
+        amendedReviewData.map(
           ({
             title,
             review_body,
@@ -62,20 +66,27 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
       return db.query(insertReviewsQueryString);
     })
     .then((returnedReviewData) => {
-      console.log(returnedReviewData.rows);
-      amendDate(commentData);
+      const amendedCommentData = amendDate(commentData);
+      const reviewLookup = createReviewLookupObj(returnedReviewData.rows);
+      const commentsWithReviewIds = formatComments(
+        amendedCommentData,
+        reviewLookup
+      );
+
       const insertCommentsQueryString = format(
         `INSERT INTO comments
         (author, review_id, votes, created_at, body)
         VALUES %L
         `,
-        commentData.map(({ author, review_id, votes, created_at, body }) => [
-          author,
-          review_id,
-          votes,
-          created_at,
-          body
-        ])
+        commentsWithReviewIds.map(
+          ({ created_by, review_id, votes, created_at, body }) => [
+            created_by,
+            review_id,
+            votes,
+            created_at,
+            body
+          ]
+        )
       );
       return db.query(insertCommentsQueryString);
     });
