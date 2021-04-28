@@ -5,11 +5,11 @@ const {
 } = require('../db/utils/data-manipulation');
 
 describe('amendDate', () => {
-  test.only('should return an empty array, when passed in an empty array', () => {
+  test('should return an empty array, when passed in an empty array', () => {
     const actual = amendDate([]);
     expect(actual).toEqual([]);
   });
-  test.only('should return an array with the created_at value in the correct date format', () => {
+  test('should return an array with the created_at value in the correct date format', () => {
     const arrayWithUnixDate = [
       {
         created_at: 1610964101251
@@ -18,7 +18,7 @@ describe('amendDate', () => {
     const actual = amendDate(arrayWithUnixDate);
     expect(actual).toEqual([{ created_at: new Date(1610964101251) }]);
   });
-  test.only('the array passed in should not be mutated', () => {
+  test('the array passed in should not be mutated', () => {
     const arrayWithUnixDate = [
       {
         created_at: 1610964101251
