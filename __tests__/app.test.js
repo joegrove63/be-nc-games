@@ -45,4 +45,12 @@ describe('GET /api/categories', () => {
         });
       });
   });
+  test.only('should respond status:404 when sent a bad request', () => {
+    return request(app)
+      .get('/api/bananas')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
 });
