@@ -20,37 +20,45 @@ describe('GET /api/categories', () => {
       .expect(200)
       .then((response) => {
         const categories = response.body.categories;
-        expect(categories).toHaveLength(4);
-        expect(categories).toEqual([
-          {
-            slug: 'euro game',
-            description: 'Abstact games that involve little luck'
-          },
-          {
-            slug: 'social deduction',
-            description: "Players attempt to uncover each other's hidden role"
-          },
-          {
-            slug: 'dexterity',
-            description: 'Games involving physical skill'
-          },
-          {
-            slug: "children's games",
-            description: 'Games suitable for children'
-          }
-        ]);
+        expect(categories.length).toBeGreaterThan(0);
         categories.forEach((category) => {
-          expect(typeof category.slug).toBe('string');
-          expect(typeof category.description).toBe('string');
+          expect(category).toEqual({
+            slug: expect.any(String),
+            description: expect.any(String)
+          });
         });
       });
   });
-  test.only('should respond status:404 when sent a bad request', () => {
+  test.only('should respond status:404 when sent request not found', () => {
     return request(app)
       .get('/api/bananas')
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe('Not Found');
+      });
+  });
+});
+
+describe('GET /api/reviews/:review_id', () => {
+  test('respond with status:200 & the review from the specific review_id', () => {
+    const review_id = 1;
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(200)
+      .then((response) => {
+        const review = response.body.review;
+        expect(review).toEqual({
+          review_id: 1,
+          title: 'Agricola',
+          review_body: 'Farmyard fun!',
+          designer: 'Uwe Rosenberg',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          votes: 1,
+          category: 'euro game',
+          owner: 'mallionaire',
+          created_at: '2021-01-18T10:00:20.514Z'
+        });
       });
   });
 });
