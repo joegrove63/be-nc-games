@@ -8,7 +8,7 @@ const selectReviewById = (review_id) => {
       if (!review) {
         return Promise.reject({
           status: 404,
-          msg: 'No review found for review_id: ${review_id}'
+          msg: `No review found for review_id: ${review_id}`
         });
       }
       return review;

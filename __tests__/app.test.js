@@ -64,10 +64,10 @@ describe('GET /api/reviews/:review_id', () => {
   test.only('respond with status:404 Not Found when path does not exist', () => {
     const review_id = 999;
     return request(app)
-      .get('/api/reviews/${review_id}')
+      .get(`/api/reviews/${review_id}`)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('No review found for ${review_id}');
+        expect(body.msg).toBe(`No review found for review_id: ${review_id}`);
       });
   });
 });
