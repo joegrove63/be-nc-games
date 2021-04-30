@@ -14,7 +14,7 @@ afterAll(() => {
 });
 
 describe('GET /api/categories', () => {
-  test.only('This endpoint should respond with a status of 200 & all of the categories', () => {
+  test('This endpoint should respond with a status of 200 & all of the categories', () => {
     return request(app)
       .get('/api/categories')
       .expect(200)
@@ -29,7 +29,7 @@ describe('GET /api/categories', () => {
         });
       });
   });
-  test.only('should respond status:404 when sent request not found', () => {
+  test('should respond status:404 when sent request not found', () => {
     return request(app)
       .get('/api/bananas')
       .expect(404)
@@ -40,7 +40,7 @@ describe('GET /api/categories', () => {
 });
 
 describe('GET /api/reviews/:review_id', () => {
-  test('respond with status:200 & the review from the specific review_id', () => {
+  test.only('respond with status:200 & the review from the specific review_id', () => {
     const review_id = 1;
     return request(app)
       .get(`/api/reviews/${review_id}`)
@@ -59,6 +59,15 @@ describe('GET /api/reviews/:review_id', () => {
           owner: 'mallionaire',
           created_at: '2021-01-18T10:00:20.514Z'
         });
+      });
+  });
+  test.only('respond with status:404 Not Found when path does not exist', () => {
+    const review_id = 999;
+    return request(app)
+      .get('/api/reviews/${review_id}')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('No review found for ${review_id}');
       });
   });
 });
