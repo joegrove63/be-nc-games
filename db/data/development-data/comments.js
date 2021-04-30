@@ -465,14 +465,3 @@ module.exports = [
     created_at: 1616854536110
   }
 ];
-
-// Scythe; you're gonna need a bigger table!
-// "That's just what an evil person would say!"
-// "Build you own tour de Yorkshire"
-// "A truly Quacking Game; Quacks of Quedlinburg"
-// "One Night Ultimate Werewolf"
-// "JengARRGGGH!"
-// 'Dolor reprehenderit'
-//"Settlers of Catan: Don't Settle For Less"
-//'Proident tempor et.'
-// 'Occaecat consequat officia in quis commodo.'
