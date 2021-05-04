@@ -29,6 +29,9 @@ describe('GET /api/categories', () => {
         });
       });
   });
+});
+
+describe('not found request for api/bananas', () => {
   test('should respond status:404 when sent request not found', () => {
     return request(app)
       .get('/api/bananas')
@@ -40,7 +43,7 @@ describe('GET /api/categories', () => {
 });
 
 describe('GET /api/reviews/:review_id', () => {
-  test.only('respond with status:200 & the review from the specific review_id', () => {
+  test('respond with status:200 & the review from the specific review_id', () => {
     const review_id = 1;
     return request(app)
       .get(`/api/reviews/${review_id}`)
@@ -61,7 +64,7 @@ describe('GET /api/reviews/:review_id', () => {
         });
       });
   });
-  test.only('respond with status:404 Not Found when path does not exist', () => {
+  test('respond with status:404 Not Found when path does not exist', () => {
     const review_id = 999;
     return request(app)
       .get(`/api/reviews/${review_id}`)
@@ -71,3 +74,53 @@ describe('GET /api/reviews/:review_id', () => {
       });
   });
 });
+
+describe.only('PATCH /api/reviews/:review_id', () => {
+  test('responds with status: 200 & updated votes by inc_votes', () => {
+    //UPDATE THE DESCRIPTION
+    const review_id = 1;
+    const incVotes = { inc_votes: 10 };
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(incVotes)
+      .expect(200)
+      .then(({ body }) => {
+        const review = body.review;
+        expect(review).toEqual({
+          review_id: 1,
+          title: 'Agricola',
+          review_body: 'Farmyard fun!',
+          designer: 'Uwe Rosenberg',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          votes: 11,
+          category: 'euro game',
+          owner: 'mallionaire',
+          created_at: '2021-01-18T10:00:20.514Z'
+        });
+      });
+  });
+});
+
+// describe('GET /api/reviews', () => {
+//   test('responds with a status code:200 & an reviews array of objects', () => {
+//     return request(app)
+//       .get('/api/reviews')
+//       .expect(200)
+//       .then((response) => {
+//         const { reviews } = response.body;
+//         expect(reviews.length).toBeGreaterThan(0);
+//         reviews.forEach((review) => {
+//           expect(review).toEqual({
+//             owner: expect.any(String),
+//             title: expect.any(String),
+//             review_id: expect.any(Number),
+//             category: expect.any(String),
+//             review_img_url: expect.any(String),
+//             created_at: expect.any()
+//           });
+//         });
+//       });
+//   });
+//   test('responds with a status code:200 & an reviews array of objects, and can accept any of the following queries - sort_by, order & category', () => {});
+// });

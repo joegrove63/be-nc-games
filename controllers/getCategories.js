@@ -1,4 +1,4 @@
-const selectCategories = require('../models/api.model');
+const selectCategories = require('../models/selectCategories');
 
 const getCategories = (request, response) => {
   selectCategories()
