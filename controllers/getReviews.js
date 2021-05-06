@@ -1,12 +1,11 @@
 const arrangeReviews = require('../models/arrangeReviews');
 
-const getCategories = (request, response) => {
-  //   console.log('were in the controller');
-  //   arrangeReviews()
-  //     .then((categories) => {
-  //       return response.status(200).send({ categories });
-  //     })
-  //     .catch(next);
+const getReviews = (request, response) => {
+  const { sort_by, order, category } = request.query;
+  arrangeReviews(sort_by, order, category).then((reviews) => {
+    return response.status(200).send({ reviews });
+  });
+  //.catch(next);
 };
 
-module.exports = getCategories;
+module.exports = getReviews;

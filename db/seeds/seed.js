@@ -46,7 +46,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
             title,
             review_body,
             designer,
-            review_img_url,
+            review_img_url = 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
             votes,
             category,
             owner,

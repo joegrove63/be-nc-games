@@ -75,7 +75,7 @@ describe('GET /api/reviews/:review_id', () => {
   });
 });
 
-describe.only('PATCH /api/reviews/:review_id', () => {
+describe('PATCH /api/reviews/:review_id', () => {
   test('responds with status: 200 & updated votes by inc_votes', () => {
     //UPDATE THE DESCRIPTION
     const review_id = 1;
@@ -102,25 +102,120 @@ describe.only('PATCH /api/reviews/:review_id', () => {
   });
 });
 
-// describe('GET /api/reviews', () => {
-//   test('responds with a status code:200 & an reviews array of objects', () => {
-//     return request(app)
-//       .get('/api/reviews')
-//       .expect(200)
-//       .then((response) => {
-//         const { reviews } = response.body;
-//         expect(reviews.length).toBeGreaterThan(0);
-//         reviews.forEach((review) => {
-//           expect(review).toEqual({
-//             owner: expect.any(String),
-//             title: expect.any(String),
-//             review_id: expect.any(Number),
-//             category: expect.any(String),
-//             review_img_url: expect.any(String),
-//             created_at: expect.any()
-//           });
-//         });
-//       });
-//   });
-//   test('responds with a status code:200 & an reviews array of objects, and can accept any of the following queries - sort_by, order & category', () => {});
-// });
+describe('GET /api/reviews', () => {
+  test('responds with a status code:200 & an reviews array of objects', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBeGreaterThan(0);
+        reviews.forEach((review) => {
+          expect(review).toEqual({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String)
+          });
+        });
+      });
+  });
+  test('responds with a status code:200 & a reviews array of objects, default sort_by(date) & default order(descending)', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy('created_at', {
+          descending: true
+        });
+      });
+  });
+  test('responds with a status code:200 & a reviews array of objects, and can be filtered by a sort_by query', () => {
+    const query = 'review_id';
+    return request(app)
+      .get(`/api/reviews?sort_by=${query}`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy(`${query}`, {
+          descending: true
+        });
+      });
+  });
+  test('responds with a status code:200 & a reviews array of objects, and can be filtered asc or desc', () => {
+    return request(app)
+      .get(`/api/reviews?order=asc`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy('created_at', {
+          descending: false
+        });
+      });
+  });
+  test('responds with a status code:200 & a reviews array of objects, filtered by sort_by(review_id) filtered asc', () => {
+    const query = 'review_id';
+    return request(app)
+      .get(`/api/reviews?sort_by=${query}&order=asc`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy('review_id', {
+          descending: false
+        });
+      });
+  });
+  test('responds with a status code:200 & an array of ONLY review objects with the category in the query', () => {
+    const query = 'dexterity';
+    return request(app)
+      .get(`/api/reviews?category=${query}`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(1);
+        expect(reviews[0].category).toBe('dexterity');
+      });
+  });
+});
+
+describe('GET /api/reviews/:review_id/comments', () => {
+  test('responds with status:200 & an array of comments for the given review_id, with the below properties', () => {
+    const review_id = 2;
+    return request(app)
+      .get(`/api/reviews/${review_id}/comments`)
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments.length).toBe(3);
+        expect(comments[0]).toEqual({
+          comment_id: 1,
+          votes: 16,
+          created_at: '2017-11-22T12:43:33.389Z',
+          author: 'bainesface',
+          body: 'I loved this game too!'
+        });
+      });
+  });
+});
+
+describe.only('POST /api/reviews/:review_id/commments', () => {
+  test('responds with status:200 & and responds with the posted comment', () => {
+    const review_id = 1;
+    const request = {
+      username: 'joeg',
+      body: 'sweet game'
+    };
+    return request(app)
+      .post('/api/reviews/${review_id}/comments')
+      .send(request)
+      .expect(200)
+      .then((comment) => {
+        expect(comment).toEqual(request);
+      });
+  });
+});
