@@ -1,7 +1,6 @@
 const db = require('../db/connection');
 
 const updateReviewById = (inc_votes, review_id) => {
-  console.log('in the model!');
   return db
     .query(
       `UPDATE reviews
@@ -11,7 +10,7 @@ const updateReviewById = (inc_votes, review_id) => {
           RETURNING *`,
       [inc_votes, review_id]
     )
-    .then((review) => review.rows[0]);
+    .then((review) => review.rows);
 };
 
 module.exports = updateReviewById;

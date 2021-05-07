@@ -48,20 +48,22 @@ describe('GET /api/reviews/:review_id', () => {
     return request(app)
       .get(`/api/reviews/${review_id}`)
       .expect(200)
-      .then((response) => {
-        const review = response.body.review;
-        expect(review).toEqual({
-          review_id: 1,
-          title: 'Agricola',
-          review_body: 'Farmyard fun!',
-          designer: 'Uwe Rosenberg',
-          review_img_url:
-            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-          votes: 1,
-          category: 'euro game',
-          owner: 'mallionaire',
-          created_at: '2021-01-18T10:00:20.514Z'
-        });
+      .then(({ body }) => {
+        const review = body.review;
+        expect(review).toEqual([
+          {
+            review_id: 1,
+            title: 'Agricola',
+            review_body: 'Farmyard fun!',
+            designer: 'Uwe Rosenberg',
+            review_img_url:
+              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+            votes: 1,
+            category: 'euro game',
+            owner: 'mallionaire',
+            created_at: '2021-01-18T10:00:20.514Z'
+          }
+        ]);
       });
   });
   test('respond with status:404 Not Found when path does not exist', () => {
@@ -86,18 +88,20 @@ describe('PATCH /api/reviews/:review_id', () => {
       .expect(200)
       .then(({ body }) => {
         const review = body.review;
-        expect(review).toEqual({
-          review_id: 1,
-          title: 'Agricola',
-          review_body: 'Farmyard fun!',
-          designer: 'Uwe Rosenberg',
-          review_img_url:
-            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-          votes: 11,
-          category: 'euro game',
-          owner: 'mallionaire',
-          created_at: '2021-01-18T10:00:20.514Z'
-        });
+        expect(review).toEqual([
+          {
+            review_id: 1,
+            title: 'Agricola',
+            review_body: 'Farmyard fun!',
+            designer: 'Uwe Rosenberg',
+            review_img_url:
+              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+            votes: 11,
+            category: 'euro game',
+            owner: 'mallionaire',
+            created_at: '2021-01-18T10:00:20.514Z'
+          }
+        ]);
       });
   });
 });
@@ -189,8 +193,8 @@ describe('GET /api/reviews/:review_id/comments', () => {
     return request(app)
       .get(`/api/reviews/${review_id}/comments`)
       .expect(200)
-      .then((response) => {
-        const { comments } = response.body;
+      .then(({ body }) => {
+        const { comments } = body;
         expect(comments.length).toBe(3);
         expect(comments[0]).toEqual({
           comment_id: 1,
@@ -203,7 +207,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
   });
 });
 
-describe.only('POST /api/reviews/:review_id/commments', () => {
+describe('POST /api/reviews/:review_id/commments', () => {
   test('responds with status:200 & and responds with the posted comment', () => {
     const review_id = 1;
     const reqBody = {
@@ -214,8 +218,8 @@ describe.only('POST /api/reviews/:review_id/commments', () => {
       .post(`/api/reviews/${review_id}/comments`)
       .send(reqBody)
       .expect(200)
-      .then((comment) => {
-        const { postedComment } = comment.body;
+      .then(({ body }) => {
+        const { postedComment } = body;
         expect(postedComment.length).toBe(1);
         expect(postedComment[0]).toEqual({
           comment_id: expect.any(Number),
@@ -224,6 +228,26 @@ describe.only('POST /api/reviews/:review_id/commments', () => {
           votes: expect.any(Number),
           created_at: expect.any(String),
           body: reqBody.body
+        });
+      });
+  });
+});
+
+describe('GET /api', () => {
+  test('status: 200, responds with json representation of all the available endpoints of the api', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(Object.keys(body).length).toBe(7); // need to update as I add endpoints to endpoints.json
+        expect(body).toEqual({
+          'GET /api': expect.any(Object),
+          'GET /api/categories': expect.any(Object),
+          'GET /api/reviews': expect.any(Object),
+          'GET /api/reviews/:review_id': expect.any(Object),
+          'PATCH /api/reviews/:review_id': expect.any(Object),
+          'GET /api/reviews/:review_id/comments': expect.any(Object),
+          'POST /api/reviews/:review_id/comments': expect.any(Object)
         });
       });
   });

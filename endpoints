@@ -1,0 +1,70 @@
+ // "GET /api/reviews/:review_id": {
+  //   "description": "serves an array of the requested review",
+  //   "queries": [""],
+  //   "exampleResponse": {
+  //     "review": [
+  //       {
+  //         "title": "One Night Ultimate Werewolf",
+  //         "designer": "Akihisa Okui",
+  //         "owner": "happyamy2016",
+  //         "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+  //         "category": "hidden-roles",
+  //         "created_at": 1610964101251,
+  //         "votes": 5
+  //       }
+  //     ]
+  //   }
+  // },
+  // "PATCH /api/reviews/:review_id": {
+  //   "description": "serves an array of the specified review updated",
+  //   "queries": [""],
+  //   "Request body": { "inc_votes": 10 },
+  //   "exampleResponse": {
+  //     "reviews": [
+  //       {
+  //         "title": "One Night Ultimate Werewolf",
+  //         "designer": "Akihisa Okui",
+  //         "owner": "happyamy2016",
+  //         "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+  //         "category": "hidden-roles",
+  //         "created_at": 1610964101251,
+  //         "votes": 15
+  //       }
+  //     ]
+  //   }
+  // },
+  // "GET /api/reviews/:review_id/comments": {
+  //   "description": "serves an array of all of the comments related to the specified review_id",
+  //   "queries": [""],
+  //   "exampleResponse": {
+  //     "comments": [
+  //       {
+  //         "comment_id": 1,
+  //         "votes": 16,
+  //         "created_at": "2017-11-22T12:43:33.389Z",
+  //         "author": "bainesface",
+  //         "body": "I loved this game too!"
+  //       }
+  //     ]
+  //   }
+  // },
+  // "POST /api/reviews/:review_id/comments": {
+  //   "description": "serves an array of the posted comment",
+  //   "queries": [""],
+  //   "Request body": {
+  //     "username": "joeg",
+  //     "body": "lovely stuff!"
+  //   },
+  //   "exampleResponse": {
+  //     "postedComment": [
+  //       {
+  //         "comment_id": 7,
+  //         "author": "joeg",
+  //         "review_id": 1,
+  //         "votes": 0,
+  //         "created_at": "2021-05-07T15:21:40.216Z",
+  //         "body": "lovely stuff!"
+  //       }
+  //     ]
+  //   }
+  // }

@@ -1,7 +1,6 @@
 const db = require('../db/connection');
 
 const insertComment = (review_id, username, body) => {
-  console.log('in the model');
   return db
     .query(
       `
