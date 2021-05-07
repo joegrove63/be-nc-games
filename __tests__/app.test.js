@@ -206,16 +206,25 @@ describe('GET /api/reviews/:review_id/comments', () => {
 describe.only('POST /api/reviews/:review_id/commments', () => {
   test('responds with status:200 & and responds with the posted comment', () => {
     const review_id = 1;
-    const request = {
-      username: 'joeg',
-      body: 'sweet game'
+    const reqBody = {
+      username: 'dav3rid',
+      body: 'lovely stuff!'
     };
     return request(app)
-      .post('/api/reviews/${review_id}/comments')
-      .send(request)
+      .post(`/api/reviews/${review_id}/comments`)
+      .send(reqBody)
       .expect(200)
       .then((comment) => {
-        expect(comment).toEqual(request);
+        const { postedComment } = comment.body;
+        expect(postedComment.length).toBe(1);
+        expect(postedComment[0]).toEqual({
+          comment_id: expect.any(Number),
+          author: reqBody.username,
+          review_id: review_id,
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          body: reqBody.body
+        });
       });
   });
 });

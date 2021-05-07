@@ -11,7 +11,7 @@ const updateReviewById = (inc_votes, review_id) => {
           RETURNING *`,
       [inc_votes, review_id]
     )
-    .then((result) => result.rows[0]);
+    .then((review) => review.rows[0]);
 };
 
 module.exports = updateReviewById;
