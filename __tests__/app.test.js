@@ -3,7 +3,6 @@ const app = require('../app');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
-const categoriesRouter = require('../routers/categories.router');
 
 beforeEach(() => {
   return seed(testData);
@@ -50,29 +49,36 @@ describe('GET /api/reviews/:review_id', () => {
       .expect(200)
       .then(({ body }) => {
         const review = body.review;
-        expect(review).toEqual([
-          {
-            review_id: 1,
-            title: 'Agricola',
-            review_body: 'Farmyard fun!',
-            designer: 'Uwe Rosenberg',
-            review_img_url:
-              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-            votes: 1,
-            category: 'euro game',
-            owner: 'mallionaire',
-            created_at: '2021-01-18T10:00:20.514Z'
-          }
-        ]);
+        expect(review).toEqual({
+          review_id: 1,
+          title: 'Agricola',
+          review_body: 'Farmyard fun!',
+          designer: 'Uwe Rosenberg',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          votes: 1,
+          category: 'euro game',
+          owner: 'mallionaire',
+          created_at: '2021-01-18T10:00:20.514Z'
+        });
       });
   });
-  test('respond with status:404 Not Found when path does not exist', () => {
+  test('respond with status:404 Not Found when review id does not exist', () => {
     const review_id = 999;
     return request(app)
       .get(`/api/reviews/${review_id}`)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe(`No review found for review_id: ${review_id}`);
+      });
+  });
+  test('respond with status:400 Bad Request when given an invalid review id', () => {
+    const review_id = 'notAnId';
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :(');
       });
   });
 });
@@ -88,26 +94,68 @@ describe('PATCH /api/reviews/:review_id', () => {
       .expect(200)
       .then(({ body }) => {
         const review = body.review;
-        expect(review).toEqual([
-          {
-            review_id: 1,
-            title: 'Agricola',
-            review_body: 'Farmyard fun!',
-            designer: 'Uwe Rosenberg',
-            review_img_url:
-              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-            votes: 11,
-            category: 'euro game',
-            owner: 'mallionaire',
-            created_at: '2021-01-18T10:00:20.514Z'
-          }
-        ]);
+        expect(review).toEqual({
+          review_id: 1,
+          title: 'Agricola',
+          review_body: 'Farmyard fun!',
+          designer: 'Uwe Rosenberg',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          votes: 11,
+          category: 'euro game',
+          owner: 'mallionaire',
+          created_at: '2021-01-18T10:00:20.514Z'
+        });
+      });
+  });
+  test('respond with status:404 Not Found when resource does not exist', () => {
+    const review_id = 999;
+    const incVotes = { inc_votes: 10 };
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(incVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(`No review found for review_id: ${review_id}`);
+      });
+  });
+  test('respond with status:400 Bad Request when given an invalid id', () => {
+    const review_id = 'notAnId';
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :(');
+      });
+  });
+  test('respond with status:400 Bad Request when missing inc_votes on request body', () => {
+    const review_id = 1;
+    const incVotes = {};
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(incVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :( Missing required fields');
+      });
+  });
+  test('respond with status:400 Bad Request when more than one property', () => {
+    const review_id = 1;
+    const incVotes = { inc_votes: 1, name: 'Mitch' };
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(incVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          'Bad Request :( More than one property is not allowed'
+        );
       });
   });
 });
 
 describe('GET /api/reviews', () => {
-  test('responds with a status code:200 & an reviews array of objects', () => {
+  test('responds with a status:200 & an reviews array of objects', () => {
     return request(app)
       .get('/api/reviews')
       .expect(200)
@@ -128,7 +176,7 @@ describe('GET /api/reviews', () => {
         });
       });
   });
-  test('responds with a status code:200 & a reviews array of objects, default sort_by(date) & default order(descending)', () => {
+  test('responds with a status:200 & a reviews array of objects, default sort_by(date) & default order(descending)', () => {
     return request(app)
       .get('/api/reviews')
       .expect(200)
@@ -139,7 +187,7 @@ describe('GET /api/reviews', () => {
         });
       });
   });
-  test('responds with a status code:200 & a reviews array of objects, and can be filtered by a sort_by query', () => {
+  test('responds with a status:200 & a reviews array of objects, and can be filtered by a sort_by query', () => {
     const query = 'review_id';
     return request(app)
       .get(`/api/reviews?sort_by=${query}`)
@@ -151,7 +199,7 @@ describe('GET /api/reviews', () => {
         });
       });
   });
-  test('responds with a status code:200 & a reviews array of objects, and can be filtered asc or desc', () => {
+  test('responds with a status:200 & a reviews array of objects, and can be filtered asc or desc', () => {
     return request(app)
       .get(`/api/reviews?order=asc`)
       .expect(200)
@@ -162,7 +210,7 @@ describe('GET /api/reviews', () => {
         });
       });
   });
-  test('responds with a status code:200 & a reviews array of objects, filtered by sort_by(review_id) filtered asc', () => {
+  test('responds with a status:200 & a reviews array of objects, filtered by sort_by(review_id) filtered asc', () => {
     const query = 'review_id';
     return request(app)
       .get(`/api/reviews?sort_by=${query}&order=asc`)
@@ -174,7 +222,7 @@ describe('GET /api/reviews', () => {
         });
       });
   });
-  test('responds with a status code:200 & an array of ONLY review objects with the category in the query', () => {
+  test('responds with a status:200 & an array of ONLY review objects with the category in the query', () => {
     const query = 'dexterity';
     return request(app)
       .get(`/api/reviews?category=${query}`)
@@ -183,6 +231,32 @@ describe('GET /api/reviews', () => {
         const { reviews } = response.body;
         expect(reviews.length).toBe(1);
         expect(reviews[0].category).toBe('dexterity');
+      });
+  });
+  test('responds with a status:400 Bad Request when sort_by does not exist ', () => {
+    return request(app)
+      .get(`/api/reviews?sort_by=not-a-column`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :( Invalid sort_by query');
+      });
+  });
+  test('responds with a status:400 Bad Request when given an invalid order query ', () => {
+    return request(app)
+      .get(`/api/reviews?order=hello`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :( Invalid order query');
+      });
+  });
+  test('responds with a status:400 Bad Request when category given is not in the database ', () => {
+    return request(app)
+      .get(`/api/reviews?category=children's game`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          'Bad Request :( Category does not exist or does not have any reviews associated with it'
+        );
       });
   });
 });
@@ -203,6 +277,34 @@ describe('GET /api/reviews/:review_id/comments', () => {
           author: 'bainesface',
           body: 'I loved this game too!'
         });
+      });
+  });
+  test('responds with status:200 & an empty array when existing review_id with no reviews', () => {
+    const reviewIdWithNoComments = 1;
+    return request(app)
+      .get(`/api/reviews/${reviewIdWithNoComments}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+  test('responds with status:404 when given review_id that does not exist', () => {
+    const review_id = 999;
+    return request(app)
+      .get(`/api/reviews/${review_id}/comments`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Review id does not exist');
+      });
+  });
+  test('responds with status:400 when given invalid review_id', () => {
+    const review_id = 'banana';
+    return request(app)
+      .get(`/api/reviews/${review_id}/comments`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :(');
       });
   });
 });
@@ -229,6 +331,50 @@ describe('POST /api/reviews/:review_id/commments', () => {
           created_at: expect.any(String),
           body: reqBody.body
         });
+      });
+  });
+  test('responds with status:400 Bad Request when missing required fields in the sent body', () => {
+    const review_id = 1;
+    const reqBody = {};
+    return request(app)
+      .post(`/api/reviews/${review_id}/comments`)
+      .send(reqBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request - Missing required fields');
+      });
+  });
+  test('responds with status:400 Bad Request when missing required fields in the sent body', () => {
+    const review_id = 1;
+    const reqBody = { body: 'ive forgotten to put my username' };
+    return request(app)
+      .post(`/api/reviews/${review_id}/comments`)
+      .send(reqBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request - Missing required fields');
+      });
+  });
+  test('responds with status:400 Bad Request when given a username that does not exist', () => {
+    const review_id = 1;
+    const reqBody = { username: 'usernamedoesnotexist', body: 'lovely stuff!' };
+    return request(app)
+      .post(`/api/reviews/${review_id}/comments`)
+      .send(reqBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :(');
+      });
+  });
+  test('responds with status:400 Bad Request when the given review id does not exist', () => {
+    const review_id = 999;
+    const reqBody = { username: 'dav3rid', body: 'lovely stuff!' };
+    return request(app)
+      .post(`/api/reviews/${review_id}/comments`)
+      .send(reqBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request :(');
       });
   });
 });

@@ -14,17 +14,19 @@ const arrangeReviews = (sort_by = 'created_at', order = 'DESC', category) => {
 
   const allowedOrder = ['ASC', 'DESC', 'asc', 'desc'];
 
+  const devCategories = [];
+
   if (!allowedSortByCollumns.includes(sort_by)) {
     return Promise.reject({
       status: 400,
-      msg: 'Invalid sort_by query'
+      msg: 'Bad Request :( Invalid sort_by query'
     });
   }
 
   if (!allowedOrder.includes(order)) {
     return Promise.reject({
       status: 400,
-      msg: 'Invalid order query'
+      msg: 'Bad Request :( Invalid order query'
     });
   }
 
@@ -46,6 +48,13 @@ const arrangeReviews = (sort_by = 'created_at', order = 'DESC', category) => {
     ORDER BY ${sort_by} ${order.toUpperCase()}`;
 
   return db.query(queryStr, queryValues).then((reviews) => {
+    if (category && reviews.rows.length === 0) {
+      return Promise.reject({
+        status: 400,
+        msg:
+          'Bad Request :( Category does not exist or does not have any reviews associated with it'
+      });
+    }
     return reviews.rows;
   });
 };

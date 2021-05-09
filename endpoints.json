@@ -32,38 +32,34 @@
     }
   },
   "GET /api/reviews/:review_id": {
-    "description": "serves an array of the requested review",
+    "description": "serves an object containing the requested review",
     "queries": [""],
     "exampleResponse": {
-      "review": [
-        {
-          "title": "One Night Ultimate Werewolf",
-          "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 5
-        }
-      ]
+      "review": {
+        "title": "One Night Ultimate Werewolf",
+        "designer": "Akihisa Okui",
+        "owner": "happyamy2016",
+        "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+        "category": "hidden-roles",
+        "created_at": 1610964101251,
+        "votes": 5
+      }
     }
   },
   "PATCH /api/reviews/:review_id": {
-    "description": "serves an array of the specified review updated",
+    "description": "serves an object containing the specified review updated",
     "queries": [""],
     "Request body": { "inc_votes": 10 },
     "exampleResponse": {
-      "reviews": [
-        {
-          "title": "One Night Ultimate Werewolf",
-          "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 15
-        }
-      ]
+      "reviews": {
+        "title": "One Night Ultimate Werewolf",
+        "designer": "Akihisa Okui",
+        "owner": "happyamy2016",
+        "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+        "category": "hidden-roles",
+        "created_at": 1610964101251,
+        "votes": 15
+      }
     }
   },
   "GET /api/reviews/:review_id/comments": {
