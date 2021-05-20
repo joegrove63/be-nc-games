@@ -54,6 +54,7 @@ describe('GET /api/reviews/:review_id', () => {
           title: 'Agricola',
           review_body: 'Farmyard fun!',
           designer: 'Uwe Rosenberg',
+          comment_count: '0',
           review_img_url:
             'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
           votes: 1,
