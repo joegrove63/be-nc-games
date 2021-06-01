@@ -323,8 +323,7 @@ describe('POST /api/reviews/:review_id/commments', () => {
       .expect(200)
       .then(({ body }) => {
         const { postedComment } = body;
-        expect(postedComment.length).toBe(1);
-        expect(postedComment[0]).toEqual({
+        expect(postedComment).toEqual({
           comment_id: expect.any(Number),
           author: reqBody.username,
           review_id: review_id,

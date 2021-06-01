@@ -18,7 +18,7 @@ const insertComment = (review_id, username, body) => {
           msg: 'Bad Request - Missing required fields'
         });
       }
-      return comment.rows;
+      return comment.rows[0];
     });
 };
 
