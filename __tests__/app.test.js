@@ -23,7 +23,7 @@ describe('GET /api/categories', () => {
         categories.forEach((category) => {
           expect(category).toEqual({
             slug: expect.any(String),
-            description: expect.any(String)
+            description: expect.any(String),
           });
         });
       });
@@ -60,7 +60,7 @@ describe('GET /api/reviews/:review_id', () => {
           votes: 1,
           category: 'euro game',
           owner: 'mallionaire',
-          created_at: '2021-01-18T10:00:20.514Z'
+          created_at: '2021-01-18T10:00:20.514Z',
         });
       });
   });
@@ -86,7 +86,6 @@ describe('GET /api/reviews/:review_id', () => {
 
 describe('PATCH /api/reviews/:review_id', () => {
   test('responds with status: 200 & updated votes by inc_votes', () => {
-    //UPDATE THE DESCRIPTION
     const review_id = 1;
     const incVotes = { inc_votes: 10 };
     return request(app)
@@ -105,7 +104,7 @@ describe('PATCH /api/reviews/:review_id', () => {
           votes: 11,
           category: 'euro game',
           owner: 'mallionaire',
-          created_at: '2021-01-18T10:00:20.514Z'
+          created_at: '2021-01-18T10:00:20.514Z',
         });
       });
   });
@@ -172,7 +171,7 @@ describe('GET /api/reviews', () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String)
+            comment_count: expect.any(String),
           });
         });
       });
@@ -184,7 +183,7 @@ describe('GET /api/reviews', () => {
       .then((response) => {
         const { reviews } = response.body;
         expect(reviews).toBeSortedBy('created_at', {
-          descending: true
+          descending: true,
         });
       });
   });
@@ -196,7 +195,7 @@ describe('GET /api/reviews', () => {
       .then((response) => {
         const { reviews } = response.body;
         expect(reviews).toBeSortedBy(`${query}`, {
-          descending: true
+          descending: true,
         });
       });
   });
@@ -207,7 +206,7 @@ describe('GET /api/reviews', () => {
       .then((response) => {
         const { reviews } = response.body;
         expect(reviews).toBeSortedBy('created_at', {
-          descending: false
+          descending: false,
         });
       });
   });
@@ -219,7 +218,7 @@ describe('GET /api/reviews', () => {
       .then((response) => {
         const { reviews } = response.body;
         expect(reviews).toBeSortedBy('review_id', {
-          descending: false
+          descending: false,
         });
       });
   });
@@ -276,7 +275,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
           votes: 16,
           created_at: '2017-11-22T12:43:33.389Z',
           author: 'bainesface',
-          body: 'I loved this game too!'
+          body: 'I loved this game too!',
         });
       });
   });
@@ -315,7 +314,7 @@ describe('POST /api/reviews/:review_id/commments', () => {
     const review_id = 1;
     const reqBody = {
       username: 'dav3rid',
-      body: 'lovely stuff!'
+      body: 'lovely stuff!',
     };
     return request(app)
       .post(`/api/reviews/${review_id}/comments`)
@@ -329,7 +328,7 @@ describe('POST /api/reviews/:review_id/commments', () => {
           review_id: review_id,
           votes: expect.any(Number),
           created_at: expect.any(String),
-          body: reqBody.body
+          body: reqBody.body,
         });
       });
   });
@@ -393,7 +392,7 @@ describe('GET /api', () => {
           'GET /api/reviews/:review_id': expect.any(Object),
           'PATCH /api/reviews/:review_id': expect.any(Object),
           'GET /api/reviews/:review_id/comments': expect.any(Object),
-          'POST /api/reviews/:review_id/comments': expect.any(Object)
+          'POST /api/reviews/:review_id/comments': expect.any(Object),
         });
       });
   });
