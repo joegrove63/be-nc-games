@@ -4,7 +4,7 @@ const format = require('pg-format');
 const {
   amendDate,
   createReviewLookupObj,
-  formatComments
+  formatComments,
 } = require('../utils/data-manipulation');
 
 const seed = ({ categoryData, commentData, reviewData, userData }) => {
@@ -30,7 +30,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
         userData.map(({ username, name, avatar_url }) => [
           username,
           avatar_url,
-          name
+          name,
         ])
       );
       return db.query(insertUsersQueryString);
@@ -50,7 +50,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
             votes,
             category,
             owner,
-            created_at
+            created_at,
           }) => [
             title,
             review_body,
@@ -59,7 +59,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
             votes,
             category,
             owner,
-            created_at
+            created_at,
           ]
         )
       );
@@ -84,7 +84,7 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
             review_id,
             votes,
             created_at,
-            body
+            body,
           ]
         )
       );
@@ -93,7 +93,3 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
 };
 
 module.exports = seed;
-
-// add seeding functionality here
-// this function should take as argument(s) all the data it needs to seed
-// it should insert this data into the relevant tables in your database

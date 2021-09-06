@@ -16,22 +16,22 @@ const updateReviewById = (inc_votes, review_id) => {
       if (!review) {
         return Promise.reject({
           status: 404,
-          msg: `No review found for review_id: ${review_id}`
+          msg: `No review found for review_id: ${review_id}`,
         });
       } else if (!inc_votes_by) {
         return Promise.reject({
           status: 400,
-          msg: 'Bad Request :( Missing required fields'
+          msg: 'Bad Request :( Missing required fields',
         });
       } else if (!typeof inc_votes_by === Number) {
         return Promise.reject({
           status: 400,
-          msg: 'Bad Request :( Invalid inc_votes'
+          msg: 'Bad Request :( Invalid inc_votes',
         });
       } else if (Object.keys(inc_votes).length > 1) {
         return Promise.reject({
           status: 400,
-          msg: 'Bad Request :( More than one property is not allowed'
+          msg: 'Bad Request :( More than one property is not allowed',
         });
       }
       return review;
@@ -39,9 +39,3 @@ const updateReviewById = (inc_votes, review_id) => {
 };
 
 module.exports = updateReviewById;
-
-// UPDATE reviews
-//       SET
-//       votes = votes + $1
-//     WHERE review_id = $2
-//     RETURNING *
